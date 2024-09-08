@@ -1,0 +1,1001 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1200,
+  "model": {
+    "culture": "en-US",
+    "dataSources": [
+      {
+        "name": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19",
+        "connectionString": "Provider=SQLOLEDB;Data Source=MAIARIEF-S15O\\SQLEXPRESS;Initial Catalog=Group_19;Integrated Security=SSPI;Persist Security Info=false",
+        "impersonationMode": "impersonateAccount",
+        "account": "maiarief-s15o\\marie",
+        "annotations": [
+          {
+            "name": "ConnectionEditUISource",
+            "value": "SqlServer"
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "name": "FactSales",
+        "columns": [
+          {
+            "name": "SalesOrderID",
+            "dataType": "int64",
+            "sourceColumn": "SalesOrderID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "SalesOrderDetailID",
+            "dataType": "int64",
+            "sourceColumn": "SalesOrderDetailID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "DateKey",
+            "dataType": "dateTime",
+            "sourceColumn": "DateKey",
+            "formatString": "General Date",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "ProductID",
+            "dataType": "int64",
+            "sourceColumn": "ProductID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "SpecialOfferID",
+            "dataType": "int64",
+            "sourceColumn": "SpecialOfferID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "TerritoryID",
+            "dataType": "int64",
+            "sourceColumn": "TerritoryID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "UnitPrice",
+            "dataType": "double",
+            "sourceColumn": "UnitPrice",
+            "sourceProviderType": "Currency"
+          },
+          {
+            "name": "QuantitySold",
+            "dataType": "int64",
+            "sourceColumn": "QuantitySold",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "Revenue",
+            "dataType": "double",
+            "sourceColumn": "Revenue",
+            "sourceProviderType": "Numeric"
+          },
+          {
+            "name": "ActualCost",
+            "dataType": "double",
+            "sourceColumn": "ActualCost",
+            "sourceProviderType": "Currency"
+          },
+          {
+            "name": "Profit",
+            "dataType": "double",
+            "sourceColumn": "Profit",
+            "sourceProviderType": "Numeric"
+          },
+          {
+            "type": "calculated",
+            "name": "LineCost",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "[QuantitySold]*[ActualCost]"
+          },
+          {
+            "type": "calculated",
+            "name": "LineProfit",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "[Revenue]-[LineCost]"
+          },
+          {
+            "type": "calculated",
+            "name": "GrossProfit%",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "ROUND([LineProfit]/[Revenue]*100,2)"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "FactSales",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[FactSales].*   FROM [dbo].[FactSales] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "OrderCount",
+            "expression": "DISTINCTCOUNT(FactSales[SalesOrderID])"
+          },
+          {
+            "name": "OrderDetailCount",
+            "expression": "DISTINCTCOUNT(FactSales[SalesOrderDetailID])"
+          },
+          {
+            "name": "ProductSoldCount",
+            "expression": "DISTINCTCOUNT(FactSales[ProductID])"
+          },
+          {
+            "name": "TerritoryCount",
+            "expression": "DISTINCTCOUNT(FactSales[TerritoryID])"
+          },
+          {
+            "name": "SpecialOfferCount",
+            "expression": "DISTINCTCOUNT(FactSales[SpecialOfferID])"
+          },
+          {
+            "name": "TotalRevenue",
+            "expression": "SUM(FactSales[Revenue])"
+          },
+          {
+            "name": "TotalCost",
+            "expression": "SUM(FactSales[LineCost])"
+          },
+          {
+            "name": "GrossProfit",
+            "expression": "SUM(FactSales[LineProfit])"
+          },
+          {
+            "name": "TotalQtySold",
+            "expression": "SUM(FactSales[QuantitySold])"
+          },
+          {
+            "name": "AvgUnitPrice",
+            "expression": "[TotalRevenue]/[TotalQtySold]"
+          },
+          {
+            "name": "AvgUnitCost",
+            "expression": "[TotalCost]/[TotalQtySold]"
+          },
+          {
+            "name": "AvgProfit/Unit",
+            "expression": "[GrossProfit]/[TotalQtySold]"
+          },
+          {
+            "name": "AvgRev/Order",
+            "expression": "[TotalRevenue]/[OrderCount]"
+          },
+          {
+            "name": "AvgCost/Order",
+            "expression": "[TotalCost]/[OrderCount]"
+          },
+          {
+            "name": "GrossProfitMargin",
+            "expression": "ROUND([GrossProfit]/[TotalRevenue]*100,2)"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[FactSales].*   FROM [dbo].[FactSales] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "FactSales"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "LocationSalesDim",
+        "columns": [
+          {
+            "name": "TerritoryID",
+            "dataType": "int64",
+            "sourceColumn": "TerritoryID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "TerritoryName",
+            "dataType": "string",
+            "sourceColumn": "TerritoryName",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "TerritoryGroup",
+            "dataType": "string",
+            "sourceColumn": "TerritoryGroup",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "CountryRegionCode",
+            "dataType": "string",
+            "sourceColumn": "CountryRegionCode",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "SalesYTD",
+            "dataType": "double",
+            "sourceColumn": "SalesYTD",
+            "sourceProviderType": "Currency"
+          },
+          {
+            "name": "SalesLastYear",
+            "dataType": "double",
+            "sourceColumn": "SalesLastYear",
+            "sourceProviderType": "Currency"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "LocationSalesDim",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[LocationSalesDim].*   FROM [dbo].[LocationSalesDim] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "LocationHierarchy",
+            "levels": [
+              {
+                "name": "TerritoryGroup",
+                "ordinal": 0,
+                "column": "TerritoryGroup"
+              },
+              {
+                "name": "TerritoryName",
+                "ordinal": 1,
+                "column": "TerritoryName"
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[LocationSalesDim].*   FROM [dbo].[LocationSalesDim] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "LocationSalesDim"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "ProductCategoryDim",
+        "columns": [
+          {
+            "name": "ProductSubcategoryID",
+            "dataType": "int64",
+            "sourceColumn": "ProductSubcategoryID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "ProductSubCategoryName",
+            "dataType": "string",
+            "sourceColumn": "ProductSubCategoryName",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "ProductCategoryID",
+            "dataType": "int64",
+            "sourceColumn": "ProductCategoryID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "ProductCategoryName",
+            "dataType": "string",
+            "sourceColumn": "ProductCategoryName",
+            "sourceProviderType": "WChar"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "ProductCategoryDim",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[ProductCategoryDim].*   FROM [dbo].[ProductCategoryDim] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "ProductHierarchy",
+            "levels": [
+              {
+                "name": "ProductCategoryName",
+                "ordinal": 0,
+                "column": "ProductCategoryName"
+              },
+              {
+                "name": "ProductSubCategoryName",
+                "ordinal": 1,
+                "column": "ProductSubCategoryName"
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[ProductCategoryDim].*   FROM [dbo].[ProductCategoryDim] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "ProductCategoryDim"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "ProductDim",
+        "columns": [
+          {
+            "name": "ProductID",
+            "dataType": "int64",
+            "sourceColumn": "ProductID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "ProductSubcategoryID",
+            "dataType": "int64",
+            "sourceColumn": "ProductSubcategoryID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "ProductName",
+            "dataType": "string",
+            "sourceColumn": "ProductName",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "MakeFlag",
+            "dataType": "string",
+            "sourceColumn": "MakeFlag",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "FinishedGoodsFlag",
+            "dataType": "string",
+            "sourceColumn": "FinishedGoodsFlag",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "SellStartDate",
+            "dataType": "dateTime",
+            "sourceColumn": "SellStartDate",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "SellEndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "SellEndDate",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "ProductDim",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[ProductDim].*   FROM [dbo].[ProductDim] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[ProductDim].*   FROM [dbo].[ProductDim] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "ProductDim"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "PromotionDim",
+        "columns": [
+          {
+            "name": "SpecialOfferID",
+            "dataType": "int64",
+            "sourceColumn": "SpecialOfferID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "PromotionDescription",
+            "dataType": "string",
+            "sourceColumn": "PromotionDescription",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "PromotionType",
+            "dataType": "string",
+            "sourceColumn": "PromotionType",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "DiscountPercentage",
+            "dataType": "double",
+            "sourceColumn": "DiscountPercentage",
+            "sourceProviderType": "Currency"
+          },
+          {
+            "name": "PromotionCategory",
+            "dataType": "string",
+            "sourceColumn": "PromotionCategory",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "StartDate",
+            "dataType": "dateTime",
+            "sourceColumn": "StartDate",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "EndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "EndDate",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          },
+          {
+            "name": "MinQty",
+            "dataType": "int64",
+            "sourceColumn": "MinQty",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "MaxQty",
+            "dataType": "int64",
+            "sourceColumn": "MaxQty",
+            "sourceProviderType": "Integer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "PromotionDim",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[PromotionDim].*   FROM [dbo].[PromotionDim] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[PromotionDim].*   FROM [dbo].[PromotionDim] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "PromotionDim"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "SalesDim",
+        "columns": [
+          {
+            "name": "SalesOrderDetailID",
+            "dataType": "int64",
+            "sourceColumn": "SalesOrderDetailID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "SalesOrderID",
+            "dataType": "int64",
+            "sourceColumn": "SalesOrderID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "ProductID",
+            "dataType": "int64",
+            "sourceColumn": "ProductID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "SpecialOfferID",
+            "dataType": "int64",
+            "sourceColumn": "SpecialOfferID",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "OnlineOrderFlag",
+            "dataType": "string",
+            "sourceColumn": "OnlineOrderFlag",
+            "sourceProviderType": "Char"
+          },
+          {
+            "name": "ActualCost",
+            "dataType": "double",
+            "sourceColumn": "ActualCost",
+            "sourceProviderType": "Currency"
+          },
+          {
+            "name": "OrderDate",
+            "dataType": "dateTime",
+            "sourceColumn": "OrderDate",
+            "formatString": "General Date",
+            "sourceProviderType": "DBTimeStamp"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "SalesDim",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[SalesDim].*   FROM [dbo].[SalesDim] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "OrderHierarchy",
+            "levels": [
+              {
+                "name": "SalesOrderID",
+                "ordinal": 0,
+                "column": "SalesOrderID"
+              },
+              {
+                "name": "SalesOrderDetailID",
+                "ordinal": 1,
+                "column": "SalesOrderDetailID"
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[SalesDim].*   FROM [dbo].[SalesDim] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "SalesDim"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "sysdiagrams",
+        "columns": [
+          {
+            "name": "name",
+            "dataType": "string",
+            "sourceColumn": "name",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "principal_id",
+            "dataType": "int64",
+            "sourceColumn": "principal_id",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "diagram_id",
+            "dataType": "int64",
+            "sourceColumn": "diagram_id",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "version",
+            "dataType": "int64",
+            "sourceColumn": "version",
+            "sourceProviderType": "Integer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "sysdiagrams",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[sysdiagrams].*   FROM [dbo].[sysdiagrams] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[sysdiagrams].*   FROM [dbo].[sysdiagrams] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "sysdiagrams"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      },
+      {
+        "name": "TimeDim",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "DateKey",
+            "dataType": "int64",
+            "sourceColumn": "DateKey",
+            "sourceProviderType": "Integer"
+          },
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "FullDateAlternateKey",
+            "formatString": "General Date",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "DayNumberOfWeek",
+            "dataType": "int64",
+            "sourceColumn": "DayNumberOfWeek",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "EnglishDayNameOfWeek",
+            "dataType": "string",
+            "sourceColumn": "EnglishDayNameOfWeek",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "DayNumberOfMonth",
+            "dataType": "int64",
+            "sourceColumn": "DayNumberOfMonth",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "DayNumberOfYear",
+            "dataType": "int64",
+            "sourceColumn": "DayNumberOfYear",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "WeekNumberOfYear",
+            "dataType": "int64",
+            "sourceColumn": "WeekNumberOfYear",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "EnglishMonthName",
+            "dataType": "string",
+            "sourceColumn": "EnglishMonthName",
+            "sourceProviderType": "WChar"
+          },
+          {
+            "name": "MonthNumberOfYear",
+            "dataType": "int64",
+            "sourceColumn": "MonthNumberOfYear",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "CalendarQuarter",
+            "dataType": "int64",
+            "sourceColumn": "CalendarQuarter",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "CalendarYear",
+            "dataType": "int64",
+            "sourceColumn": "CalendarYear",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "CalendarSemester",
+            "dataType": "int64",
+            "sourceColumn": "CalendarSemester",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "FiscalQuarter",
+            "dataType": "int64",
+            "sourceColumn": "FiscalQuarter",
+            "sourceProviderType": "UnsignedTinyInt"
+          },
+          {
+            "name": "FiscalYear",
+            "dataType": "int64",
+            "sourceColumn": "FiscalYear",
+            "sourceProviderType": "SmallInt"
+          },
+          {
+            "name": "FiscalSemester",
+            "dataType": "int64",
+            "sourceColumn": "FiscalSemester",
+            "sourceProviderType": "UnsignedTinyInt"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "TimeDim",
+            "dataView": "full",
+            "source": {
+              "type": "query",
+              "query": " \t\t\t\tSELECT [dbo].[TimeDim].*   FROM [dbo].[TimeDim] ",
+              "dataSource": "SqlServer MAIARIEF-S15OSQLEXPRESS Group_19"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "TimeHierarchy",
+            "levels": [
+              {
+                "name": "CalendarYear",
+                "ordinal": 0,
+                "column": "CalendarYear"
+              },
+              {
+                "name": "CalendarSemester",
+                "ordinal": 1,
+                "column": "CalendarSemester"
+              },
+              {
+                "name": "CalendarQuarter",
+                "ordinal": 2,
+                "column": "CalendarQuarter"
+              },
+              {
+                "name": "EnglishMonthName",
+                "ordinal": 3,
+                "column": "EnglishMonthName"
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "_TM_ExtProp_QueryDefinition",
+            "value": " \t\t\t\tSELECT [dbo].[TimeDim].*   FROM [dbo].[TimeDim] "
+          },
+          {
+            "name": "_TM_ExtProp_DbTableName",
+            "value": "TimeDim"
+          },
+          {
+            "name": "_TM_ExtProp_DbSchemaName",
+            "value": "dbo"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "d0c3256f-2df9-4fd2-9082-9997e0c473e5",
+        "fromTable": "FactSales",
+        "fromColumn": "TerritoryID",
+        "toTable": "LocationSalesDim",
+        "toColumn": "TerritoryID"
+      },
+      {
+        "name": "26821ab5-457c-451e-b7dd-508aff14b590",
+        "fromTable": "FactSales",
+        "fromColumn": "ProductID",
+        "toTable": "ProductDim",
+        "toColumn": "ProductID"
+      },
+      {
+        "name": "336531e4-17bf-4bfc-993b-ec871eb94d7b",
+        "fromTable": "FactSales",
+        "fromColumn": "SpecialOfferID",
+        "toTable": "PromotionDim",
+        "toColumn": "SpecialOfferID"
+      },
+      {
+        "name": "540ef318-54ac-4872-a3b9-94f69f85280a",
+        "fromTable": "FactSales",
+        "fromColumn": "DateKey",
+        "toTable": "TimeDim",
+        "toColumn": "Date"
+      },
+      {
+        "name": "cc89e5b3-36a2-41d2-8161-42c69c405eb0",
+        "fromTable": "ProductDim",
+        "fromColumn": "ProductSubcategoryID",
+        "toTable": "ProductCategoryDim",
+        "toColumn": "ProductSubcategoryID"
+      },
+      {
+        "name": "0114cb25-140f-4078-bc54-f65c68376618",
+        "fromTable": "FactSales",
+        "fromColumn": "SalesOrderDetailID",
+        "toTable": "SalesDim",
+        "toColumn": "SalesOrderDetailID"
+      }
+    ],
+    "perspectives": [
+      {
+        "name": "Popularity",
+        "tables": [
+          {
+            "name": "FactSales",
+            "measures": [
+              {
+                "name": "GrossProfit"
+              },
+              {
+                "name": "TotalQtySold"
+              },
+              {
+                "name": "TotalRevenue"
+              }
+            ]
+          },
+          {
+            "name": "LocationSalesDim",
+            "hierarchies": [
+              {
+                "name": "LocationHierarchy"
+              }
+            ]
+          },
+          {
+            "name": "ProductCategoryDim",
+            "hierarchies": [
+              {
+                "name": "ProductHierarchy"
+              }
+            ]
+          },
+          {
+            "name": "SalesDim",
+            "columns": [
+              {
+                "name": "OnlineOrderFlag"
+              }
+            ]
+          },
+          {
+            "name": "TimeDim",
+            "hierarchies": [
+              {
+                "name": "TimeHierarchy"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ProfitByYear",
+        "tables": [
+          {
+            "name": "FactSales",
+            "measures": [
+              {
+                "name": "GrossProfit"
+              },
+              {
+                "name": "TotalQtySold"
+              }
+            ]
+          },
+          {
+            "name": "LocationSalesDim",
+            "hierarchies": [
+              {
+                "name": "LocationHierarchy"
+              }
+            ]
+          },
+          {
+            "name": "ProductCategoryDim",
+            "hierarchies": [
+              {
+                "name": "ProductHierarchy"
+              }
+            ]
+          },
+          {
+            "name": "SalesDim",
+            "columns": [
+              {
+                "name": "OnlineOrderFlag"
+              }
+            ]
+          },
+          {
+            "name": "TimeDim",
+            "hierarchies": [
+              {
+                "name": "TimeHierarchy"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "PromotionTarget",
+        "tables": [
+          {
+            "name": "FactSales",
+            "measures": [
+              {
+                "name": "AvgRev/Order"
+              },
+              {
+                "name": "OrderCount"
+              },
+              {
+                "name": "TotalQtySold"
+              },
+              {
+                "name": "TotalRevenue"
+              }
+            ]
+          },
+          {
+            "name": "ProductCategoryDim",
+            "hierarchies": [
+              {
+                "name": "ProductHierarchy"
+              }
+            ]
+          },
+          {
+            "name": "SalesDim",
+            "columns": [
+              {
+                "name": "OnlineOrderFlag"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "400"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
